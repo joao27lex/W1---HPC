@@ -28,8 +28,8 @@ int main(int argc, char* argv[]){
 
     if(my_rank == 0){
         printf("Hello from rank %d/%d -- PID = %d, CPU = %d\n", my_rank, comm_size, my_pid, my_cpu);
-        for(int p = 1; p < comm_size; p++){
-            MPI_Recv(greeting, MAX_STRING, MPI_CHAR, p, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); //receives greeting from the other processes
+        for(int k = 1; k < comm_size; k++){
+            MPI_Recv(greeting, MAX_STRING, MPI_CHAR, k, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); //receives greeting from the other processes
             printf("%s\n", greeting);
         };
 

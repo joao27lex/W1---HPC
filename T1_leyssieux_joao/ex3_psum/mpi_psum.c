@@ -24,13 +24,13 @@ int main(int argc, char** argv){
 
     element_per_process = n / comm_sz;
 
-    randomVector = (double*)malloc(n * sizeof(double));
     localVector = (double*)malloc(element_per_process * sizeof(double));
 
     // BCast step ------------------------------------------------------------------------------------
 
     if (my_rank == 0) {
         // Allocates and generates random double values to the vector
+        randomVector = (double*)malloc(n * sizeof(double));
         srand(time(NULL));
 
         for (int i = 0; i < n; i++){
@@ -38,8 +38,8 @@ int main(int argc, char** argv){
         }
 
         // Distributes splitted vector to all processes
-        for (int process = 0; process < comm_sz; process++){
-            offset = (process + 1) * element_per_process;
+        for (int process = 1; process < comm_sz; process++){
+            offset = process * element_per_process;
             MPI_Send(&randomVector[offset], element_per_process, MPI_DOUBLE, process, 0, MPI_COMM_WORLD);
         }
 

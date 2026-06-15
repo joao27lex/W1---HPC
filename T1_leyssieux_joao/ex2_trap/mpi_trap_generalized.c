@@ -40,9 +40,11 @@ static void Get_input(int my_rank, int comm_sz,
 
 int main(void) {
     int    my_rank, comm_sz, n, local_n, rem, offset;
-    double a, b, h, local_a, local_b, local_integral, total_integral;
+    double a, b, h, local_a, local_b, local_integral, total_integral, T_start, T_end, T_p, E_p;
 
     MPI_Init(NULL, NULL);
+    T_start = MPI_Wtime();
+
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
     MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
 
@@ -69,6 +71,15 @@ int main(void) {
                n, a, b, total_integral);
     }
 
+    T_end = MPI_Wtime();
     MPI_Finalize();
+
+    T_p = T_end - T_start; // Calculates the execution time
+    //E_p = T_s/T_p;
+
+    if (my_rank == 0) {
+        printf("Execution time -  %f seconds\n", T_p);
+    }
+
     return 0;
 }

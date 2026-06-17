@@ -15,42 +15,60 @@ int main(int argc, char** argv){
     double *randomVector = NULL;
     double *localVector = NULL;
     
-    int n = 1000; // Fixed size to simplify memory allocation and division
+    int n = 1000;
 
     MPI_Init(&argc, &argv);
 
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); 
     MPI_Comm_size(MPI_COMM_WORLD, &comm_sz); 
 
-    element_per_process = n / comm_sz;
+    element_per_process = n / comm_sz; // N/p
 
-    localVector = (double*)malloc(element_per_process * sizeof(double));
+    localVector = (double*)malloc(element_per_process * sizeof(double)); // allocates local vector for each process
 
     // BCast step ------------------------------------------------------------------------------------
 
     if (my_rank == 0) {
-        // Allocates and generates random double values to the vector
-        randomVector = (double*)malloc(n * sizeof(double));
+        
+        randomVector = (double*)malloc(n * sizeof(double)); // allocates and generates random double values to the vector
         srand(time(NULL));
 
         for (int i = 0; i < n; i++){
-            randomVector[i] = genRandomDouble(); 
+            randomVector[i] = genRandomDouble(); //stores a random double in the i position of the cector
         }
 
-        // Distributes splitted vector to all processes
-        for (int process = 1; process < comm_sz; process++){
-            offset = process * element_per_process;
-            MPI_Send(&randomVector[offset], element_per_process, MPI_DOUBLE, process, 0, MPI_COMM_WORLD);
-        }
+        if (n%comm_sz == 0){
+            for (int process = 1; process < comm_sz; process++){
+                offset = process * element_per_process; 
+                MPI_Send(&randomVector[offset], element_per_process, MPI_DOUBLE, process, 0, MPI_COMM_WORLD);
+            }
 
-        // Copies the splitted vector to the local vector of process
-        for (int i = 0; i < element_per_process; i++){
-            localVector[i] = randomVector[i];
+            // Copies the splitted vector to the local vector of process
+            for (int i = 0; i < element_per_process; i++){
+                localVector[i] = randomVector[i];
+            }
         }
+        else{
+
+            int rem = n % comm_sz; // calculates the mod to increment the offset
+
+            for (int process = 1; process < comm_sz; process++){
+                offset = process * element_per_process + (process < rem ? process : rem); // calculates the offset for the process considering the extra elements
+                int elements_to_send = element_per_process + (process < rem ? 1 : 0); // calculates how many elements the process will receive considering the extra elements
+                MPI_Send(&randomVector[offset], elements_to_send, MPI_DOUBLE, process, 0, MPI_COMM_WORLD);
+            }
+
+            // Copies the splitted vector to the local vector of process
+            for (int i = 0; i < element_per_process + (my_rank < rem ? 1 : 0); i++){
+                localVector[i] = randomVector[i];
+            }
+        }
+        
     } 
     
+    // if not process 0, receives the splitted vector
     else {
-        // Receives the splitted vector     
+        // Recieves the splitted vector     
         MPI_Recv(localVector, element_per_process, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
     }

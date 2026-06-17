@@ -21,8 +21,8 @@ int source(int k, int comm_size) //returns the source rank for process k
     return (k - 1 + comm_size) % comm_size;
     }
 
-int main(int argc, char* argv[]){
-    MPI_Init(&argc, &argv);
+int main(void){
+    MPI_Init(NULL, NULL);
 
     int comm_size; //total number of processes in the communicator
     int my_rank; //this process’s rank 

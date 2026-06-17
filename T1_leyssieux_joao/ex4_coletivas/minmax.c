@@ -4,7 +4,7 @@
 #include <mpi.h>
 #include <math.h>
 
-int main(int argc, char** argv){
+int main(void){
     int my_rank, comm_sz, splitted_block_size, rem_block_size;
     double local_max, local_min, global_max, global_min;
     double *randomRootVector = NULL; 
@@ -14,7 +14,7 @@ int main(int argc, char** argv){
 
     int n = 1000;
     
-    MPI_Init(&argc, &argv);
+    MPI_Init(NULL, NULL);
     
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); 
     MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);

@@ -11,8 +11,8 @@
 
 #define MAX_STRING 100
 
-int main(int argc, char* argv[]){
-    MPI_Init(&argc, &argv);
+int main(void){
+    MPI_Init(NULL, NULL);
 
     int comm_size, my_rank, my_cpu;
     pid_t my_pid; //proccess identifier

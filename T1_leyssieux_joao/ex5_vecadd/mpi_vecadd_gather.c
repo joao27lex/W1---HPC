@@ -1,14 +1,14 @@
 /* mpi_vecadd.c
- * Module 3, Class 6 -- Parallel vector addition with
- * MPI_Scatter / MPI_Gather.
- *
- * Process 0 builds vectors x[N] and y[N], scatters them to all ranks,
- * each rank computes its block of z = x + y, and process 0 gathers the
- * pieces back into a full z[N].
- *
- * Compile: mpicc -O2 -Wall -o mpi_vecadd mpi_vecadd.c
- * Run:     mpiexec -n 4 ./mpi_vecadd
- */
+* Module 3, Class 6 -- Parallel vector addition with
+* MPI_Scatter / MPI_Gather.
+*
+* Process 0 builds vectors x[N] and y[N], scatters them to all ranks,
+* each rank computes its block of z = x + y, and process 0 gathers the
+* pieces back into a full z[N].
+*
+* Compile: mpicc -O2 -Wall -o mpi_vecadd mpi_vecadd.c
+* Run:     mpiexec -n 4 ./mpi_vecadd
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,22 +57,24 @@ int main(void) {
     if (my_rank == 0) {
         printf("z = x + y:\n");
         
-        bool is_valid = true
+        int is_valid = 1;
 
         for (int i = 0; i < N; i++) {
             printf("  z[%2d] = %g\n", i, z[i]);
             
             // Serial verification
             double serial_sum = x[i] + y[i];
+            
             if (z[i] != serial_sum) {
-                is_valid = false;
+                is_valid = 0;
             }
         }
 
         printf("\n--- Verificação Serial ---\n");
         if (is_valid) {
             printf("Parallel is equal to the serial calculation.\n");
-        } else {
+        } 
+        else {
             printf("Parallel calculation differs from the serial calculation.\n");
         }
 

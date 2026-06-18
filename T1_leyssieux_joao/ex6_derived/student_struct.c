@@ -33,13 +33,11 @@ int main(void) {
     // 'saves' the new MPI type
     MPI_Type_commit(&mpi_student_type);
     
-
     if (my_rank == 0) {
         scanf("%50s %lf %d", student.name, &student.grade, &student.id); // reads the student data from the user input
         printf("Name: %s grade: %.1f  id: %d\n", student.name, student.grade, student.id);
     }
 
-    // 3. Transmissão Coletiva (Bcast)
     // every process calls the broadcast, only the root sends the data and the others receive the data
     MPI_Bcast(&student, 1, mpi_student_type, 0, MPI_COMM_WORLD);
 

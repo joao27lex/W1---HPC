@@ -46,7 +46,7 @@ int main(void) {
         printf("Process %d name: %s grade: %.1f id: %d\n", my_rank, student.name, student.grade, student.id);
     }
 
-    MPI_Type_free(&mpi_student_type);
+    MPI_Type_free(&mpi_student_type); // frees the memory alocatted for the MPI Type
     MPI_Finalize();
 
     return 0;

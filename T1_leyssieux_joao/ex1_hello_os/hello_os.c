@@ -1,29 +1,28 @@
 #define _GNU_SOURCE
 
-#include <unistd.h>   // getpid()
-#include <sched.h>    // sched_getcpu()
+#include <unistd.h>   // getpid() function
+#include <sched.h>    // sched_getcpu() function
 #include <mpi.h>
 
 //default libs
 #include <stdio.h>
 #include <string.h>
 
-
 #define MAX_STRING 100
 
 int main(void){
     MPI_Init(NULL, NULL);
 
-    int comm_size; //total number of processes in the communicator
-    int my_rank; //this process’s rank 
+    int comm_size; //total number of processes in the program
+    int my_rank; //this process rank 
     pid_t my_pid; //proccess identifier
-    int my_cpu;
+    int my_cpu; 
     char greeting[MAX_STRING]; //size of the greeting string
 
     MPI_Comm_size(MPI_COMM_WORLD, &comm_size); //how many processes?
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); //which one am I?
 
-    my_pid = getpid();
+    my_pid = getpid(); 
     my_cpu = sched_getcpu();
 
     if(my_rank == 0){
@@ -32,7 +31,6 @@ int main(void){
             MPI_Recv(greeting, MAX_STRING, MPI_CHAR, k, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); //receives greeting from the other processes
             printf("%s\n", greeting);
         };
-
     }
 
     else{

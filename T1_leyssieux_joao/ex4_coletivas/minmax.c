@@ -16,8 +16,8 @@ int main(void){
     
     MPI_Init(NULL, NULL);
     
-    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); 
-    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); //how many processes?
+    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz); // which one am i?
     
     block_size = n / comm_sz;
     rem_block_size = n % comm_sz;

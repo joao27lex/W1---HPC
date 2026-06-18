@@ -4,6 +4,7 @@
 #include <mpi.h>
 #include <math.h>
 
+// Generates a random double number between 0 and 1
 double genRandomDouble(void){
     return (double)rand() / RAND_MAX;
 }
@@ -28,10 +29,9 @@ int main(void){
 
     // BCast step ------------------------------------------------------------------------------------
 
-    if (my_rank == 0) {
-        
+    if (my_rank == 0){
         randomVector = (double*)malloc(n * sizeof(double)); // allocates and generates random double values to the vector
-        srand(time(NULL));
+        srand(time(NULL)); //seed for the random generator
 
         for (int i = 0; i < n; i++){
             randomVector[i] = genRandomDouble(); //stores a random double in the i position of the cector
@@ -40,6 +40,8 @@ int main(void){
         if (n%comm_sz == 0){
             for (int process = 1; process < comm_sz; process++){
                 offset = process * element_per_process; 
+
+                // sends the corresponding part of the vector to each process
                 MPI_Send(&randomVector[offset], element_per_process, MPI_DOUBLE, process, 0, MPI_COMM_WORLD);
             }
 
@@ -49,12 +51,13 @@ int main(void){
             }
         }
         else{
-
             int rem = n % comm_sz; // calculates the mod to increment the offset
 
             for (int process = 1; process < comm_sz; process++){
                 offset = process * element_per_process + (process < rem ? process : rem); // calculates the offset for the process considering the extra elements
                 int elements_to_send = element_per_process + (process < rem ? 1 : 0); // calculates how many elements the process will receive considering the extra elements
+
+                //
                 MPI_Send(&randomVector[offset], elements_to_send, MPI_DOUBLE, process, 0, MPI_COMM_WORLD);
             }
 
@@ -68,7 +71,7 @@ int main(void){
     
     // if not process 0, receives the splitted vector
     else {
-        // Recieves the splitted vector     
+        // Receives the splitted vector     
         MPI_Recv(localVector, element_per_process, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
     }

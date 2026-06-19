@@ -1,10 +1,26 @@
-all: mpi_trap
+# Compiling and running the hello_os
+CC = mpicc
+CFLAGS = -O2 -Wall
+LDFLAGS = -lm
 
-mpi_trap: mpi_trap_generalized.c
-	gcc -g -Wall -I"C:\Program Files (x86)\Microsoft SDKs\MPI\Include" -o mpi_trap mpi_trap_generalized.c -L"C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64" -lmsmpi -lm
+# Name of the program and src file
+PROG = mpi_trap_generalized
+SRC = $(PROG).c
 
-run_trap: mpi_trap
-	mpiexec -n 4 mpi_trap.exe
+# random default p
+P = 5
 
+# Makefile rules
+all: $(PROG)
+
+# Compiles the program
+$(PROG): $(SRC)
+	$(CC) $(CFLAGS) -o $(PROG) $(SRC) $(LDFLAGS)
+
+# Runs with mpexec and the specified number of processes
+run: $(PROG)
+	mpiexec -n $(P) ./$(PROG)
+
+# Cleans the compiled program
 clean:
-	del mpi_trap.exe
+	rm -f $(PROG)

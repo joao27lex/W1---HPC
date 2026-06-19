@@ -1,13 +1,26 @@
-all: hello_os hello_ring
+# Compiling and running the hello_os
+CC = mpicc
+CFLAGS = -O2 -Wall
+LDFLAGS = -lm
 
-hello_os: hello_os.c
-	gcc -g -Wall -I"C:\Program Files (x86)\Microsoft SDKs\MPI\Include" -o hello_os hello_os.c -L"C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64" -lmsmpi
+# Name of the program and src file
+PROG = hello_os
+SRC = $(PROG).c
 
-run_os: hello_os
-	mpiexec -n 8 hello_os.exe
+# random default p
+P = 5
 
-hello_ring: hello_ring.c
-	gcc -g -Wall -I"C:\Program Files (x86)\Microsoft SDKs\MPI\Include" -o hello_ring hello_ring.c -L"C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64" -lmsmpi
+# Makefile rules
+all: $(PROG)
 
+# Compiles the program
+$(PROG): $(SRC)
+	$(CC) $(CFLAGS) -o $(PROG) $(SRC) $(LDFLAGS)
+
+# Runs with mpexec and the specified number of processes
+run: $(PROG)
+	mpiexec -n $(P) ./$(PROG)
+
+# Cleans the compiled program
 clean:
-	del hello_os.exe hello_ring.exe
+	rm -f $(PROG)

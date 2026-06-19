@@ -4,9 +4,10 @@
 #include <sched.h>    // sched_getcpu()
 #include <mpi.h>
 
-//default libs
+
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 
 #define MAX_STRING 100

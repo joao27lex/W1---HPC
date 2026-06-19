@@ -22,7 +22,7 @@ double Trap(double left, double right, int n_traps, double h) {
 
 void Get_input(int my_rank, int comm_sz, double *a_p, double *b_p, int *n_p) {
     if (my_rank == 0) {
-        printf("Enter a, b, n: ");
+        printf("Enter a, b, n: \n");
         scanf("%lf %lf %d", a_p, b_p, n_p); //inputs left and right points and total number of trapezoids
         for (int dest = 1; dest < comm_sz; dest++) {
             MPI_Send(a_p, 1, MPI_DOUBLE, dest, 0, MPI_COMM_WORLD); //sends left point to all other processes
@@ -68,7 +68,7 @@ int main(void) {
             MPI_Recv(&local_integral, 1, MPI_DOUBLE, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             total_integral += local_integral;
         }
-        printf("With n = %d trapezoids, integral of f on [%g, %g] = %.15e\n", n, a, b, total_integral);
+        printf("\nWith n = %d trapezoids, integral of f on [%g, %g] = %.15e\n", n, a, b, total_integral);
     }
 
     T_end = MPI_Wtime(); //stops the timer
@@ -78,7 +78,7 @@ int main(void) {
     //E_p = T_s/T_p;
 
     if (my_rank == 0) {
-        printf("Execution time -  %f seconds\n", T_p);
+        printf("\nExecution time -  %f seconds\n", T_p);
     }
 
     return 0;

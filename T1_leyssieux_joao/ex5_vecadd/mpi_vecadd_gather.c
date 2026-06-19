@@ -47,7 +47,7 @@ int main(void) {
     MPI_Scatter(x, local_n, MPI_DOUBLE, local_x, local_n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Scatter(y, local_n, MPI_DOUBLE, local_y, local_n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    // Cada processo calcula a sua parte
+    // each process calculates its local block of z = x + y
     for (int i = 0; i < local_n; i++)
         local_z[i] = local_x[i] + local_y[i];
 
@@ -70,7 +70,6 @@ int main(void) {
             }
         }
 
-        printf("\n--- Verificação Serial ---\n");
         if (is_valid) {
             printf("Parallel is equal to the serial calculation.\n");
         } 

@@ -113,7 +113,7 @@ int main(void){
         free(randomVector);
     }
 
-    free(localVector);
+    free(localVector); 
     MPI_Finalize();
     
     return 0;

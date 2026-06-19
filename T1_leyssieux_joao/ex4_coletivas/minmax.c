@@ -19,11 +19,11 @@ int main(void){
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); //how many processes?
     MPI_Comm_size(MPI_COMM_WORLD, &comm_sz); // which one am i?
     
-    block_size = n / comm_sz;
+    splitted_block_size = n / comm_sz;
     rem_block_size = n % comm_sz;
     
     randomRootVector = (double*)malloc(n * sizeof(double)); //allocates memory for the random doubles in process 0
-    splittedVector = (double*)malloc(block_size * sizeof(double)); //allocates memory for the splitted vectors in each process
+    splittedVector = (double*)malloc(splitted_block_size * sizeof(double)); //allocates memory for the splitted vectors in each process
 
     if(my_rank == 0){
         srand(time(NULL));
@@ -38,7 +38,7 @@ int main(void){
         }
     }
 
-    MPI_Scatter(randomRootVector, block_size, MPI_DOUBLE, splittedVector, block_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Scatter(randomRootVector, splitted_block_size, MPI_DOUBLE, splittedVector, splitted_block_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
 
 //------------------------------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ int main(void){
     local_min = splittedVector[0]; //starts with the first value
     local_max = splittedVector[0]; //starts with the first value
 
-    for(int i = 1; i < block_size; i++){
+    for(int i = 1; i < splitted_block_size; i++){
         if(splittedVector[i] < local_min){
             local_min = splittedVector[i];
         }
